@@ -1,0 +1,84 @@
+/* iPad layout; differences from the first design are
+   marked "live:". The dark palette and sans font for everything that is not the context. */
+:root { --bg: var(--cl-bg); --surface: var(--cl-surface-2); --surface-2: var(--cl-bg-000); --raised: #2a2a28;
+  --line: var(--cl-line); --line-soft: rgba(255,255,255,.06); --fg: var(--cl-text); --fg-2: var(--cl-text-2); --fg-3: var(--cl-text-4); --info: #7dd3fc; }
+html, body { background: var(--bg); color: var(--fg); font: 15px/1.4 var(--font-sans); -webkit-font-smoothing: antialiased; }
+body { overflow: hidden; }
+.app { zoom: var(--z, 1); height: calc(100dvh / var(--z, 1)); display: flex; flex-direction: column; }
+
+/* top bar: title on the left; Set aside, the list button and Answer ↓ / ↑ Top at the right end, under the right thumb */
+.top { flex: none; display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 12px; border-bottom: 1px solid var(--line); background: var(--bg); }
+.top .who { min-width: 0; flex: 1; display: flex; flex-direction: column; }
+.top .who b { font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.top .who span { font-size: 13px; color: var(--fg-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tb { flex: none; height: 44px; min-width: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); font-size: 15px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; }
+.tb:hover, .tb:active { background: var(--raised); }
+.tb .cnt { min-width: 24px; height: 24px; border-radius: 12px; background: #f59e0b; color: #1a1205; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; padding: 0 7px; }
+.tb .cnt.aside { background: var(--raised); color: var(--fg-2); }
+.tb.pri { background: var(--fg); color: var(--bg); border-color: var(--fg); font-weight: 600; min-width: 112px; } /* live: fixed width, so the list button beside it never moves under the thumb */
+.tb.pri:hover { background: #fff; }
+.tb[hidden] { display: none; }
+
+/* list as an overlay; live: from the right edge, under its button  */
+.scrim { position: fixed; inset: 0; background: #0009; z-index: 40; opacity: 0; pointer-events: none; transition: opacity .18s; }
+.drawer { position: fixed; top: 0; bottom: 0; right: 0; width: min(400px, 86vw); z-index: 41; background: var(--surface); border-left: 1px solid var(--line);
+  transform: translateX(102%); transition: transform .2s ease; display: flex; flex-direction: column; zoom: var(--z, 1); height: calc(100dvh / var(--z, 1)); }
+.open-list .scrim { opacity: 1; pointer-events: auto; } .open-list .drawer { transform: none; }
+.drawer .dh { display: flex; align-items: center; gap: 8px; padding: 10px 10px 10px 16px; border-bottom: 1px solid var(--line); }
+.drawer .dh h2 { margin: 0; font-size: 18px; font-weight: 700; flex: 1; }
+.drawer .dh .n { color: var(--fg-3); font-size: 13px; font-weight: 400; margin-left: 6px; }
+.tabs { display: flex; gap: 6px; padding: 10px 12px; }
+.tabs button { flex: 1; height: 40px; border-radius: 10px; border: 1px solid var(--line); color: var(--fg-2); font-size: 14.5px; }
+.tabs button.on { background: var(--raised); color: var(--fg); border-color: transparent; }
+.drawer .list { flex: 1; overflow-y: auto; padding: 0 10px 16px; }
+.cell { position: relative; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 4px 12px; padding: 11px 14px 11px 18px; margin-bottom: 6px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); overflow: hidden; cursor: pointer; }
+.cell::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--pc); }
+.cell.sel { background: color-mix(in srgb, var(--pc) 13%, var(--bg)); border-color: color-mix(in srgb, var(--pc) 70%, var(--line)); }
+.cell .t { font-size: 16px; font-weight: 600; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.cell .age { font-size: 14px; color: var(--fg-2); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.cell .s { font-size: 14px; color: var(--fg-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cell .c { font-size: 14px; color: var(--fg-3); text-align: right; white-space: nowrap; }
+.cell .p { grid-column: 1 / -1; font: 12.5px var(--font-mono); color: color-mix(in srgb, var(--pc) 70%, var(--fg-3)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cell .back { grid-column: 1 / -1; justify-self: start; margin-top: 4px; height: 36px; padding: 0 12px; border-radius: 8px; background: var(--raised); color: var(--fg); font-size: 14px; }
+.cell.orphan { border-style: dashed; border-color: color-mix(in srgb, var(--warn) 60%, var(--line)); --pc: var(--warn); }
+.empty { padding: 20px; color: var(--fg-3); }
+
+/* context, then the question at its end */
+.scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; min-height: 0; }
+.ctx { padding: 22px 28px 28px; }
+.ctx .none { color: var(--fg-3); font-style: italic; }
+.ans { margin: 8px 28px 40vh; padding-top: 18px; border-top: 1px solid var(--line); scroll-margin-top: 12px; }
+.ans .lbl { font-size: 13px; color: var(--fg-3); text-transform: uppercase; letter-spacing: .06em; margin: 0 0 10px 2px; }
+.qc { font-family: var(--font-sans); }
+.qc.big .qh { height: 48px; } .qc.big .ic { width: 40px; height: 40px; font-size: 18px; } .qc.big .ql { font-size: 16px; }
+
+/* image viewer: PhotoSwipe, with a hint for the edge swipe that closes it */
+.pswp { --pswp-bg: #000; }
+.pswp__edgehint { position: absolute; left: 0; top: 0; bottom: 0; width: 22px; background: linear-gradient(to right, #ffffff14, transparent); pointer-events: none; z-index: 10; }
+
+/* settings: a fixed layer outside the scaled .app, so it never moves or scales while the page does */
+.settings { position: fixed; top: 64px; right: 16px; width: min(440px, calc(100vw - 32px)); z-index: 100; background: var(--surface-2); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px 14px; box-shadow: 0 14px 40px #000c; font: 15px/1.4 var(--font-sans); color: var(--fg); }
+.settings .top2 { display: flex; align-items: baseline; margin-bottom: 14px; }
+.settings h3 { margin: 0; font-size: 16px; font-weight: 600; }
+.settings .val { margin-left: auto; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.settings .fs { display: flex; align-items: center; gap: 14px; }
+.settings .fs button { flex: none; width: 56px; height: 56px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); font-weight: 700; color: var(--fg); }
+.settings .fs button:active { background: var(--raised); }
+.settings .fs .small { font-size: 15px; } .settings .fs .large { font-size: 26px; }
+.settings input[type=range] { -webkit-appearance: none; appearance: none; flex: 1; height: 56px; background: transparent; touch-action: none; margin: 0; }
+.settings input[type=range]::-webkit-slider-runnable-track { height: 10px; border-radius: 5px; background: linear-gradient(to right, var(--info) var(--pct, 33%), var(--raised) var(--pct, 33%)); }
+.settings input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 40px; height: 40px; margin-top: -15px; border-radius: 50%; background: #fff; border: 0; box-shadow: 0 2px 8px #0008; }
+.settings input[type=range]::-moz-range-track { height: 10px; border-radius: 5px; background: var(--raised); }
+.settings input[type=range]::-moz-range-progress { height: 10px; border-radius: 5px; background: var(--info); }
+.settings input[type=range]::-moz-range-thumb { width: 40px; height: 40px; border-radius: 50%; background: #fff; border: 0; }
+.settings .ticks { display: flex; justify-content: space-between; padding: 0 70px; color: var(--fg-3); font-size: 12px; margin-top: -4px; }
+.settings .row2 { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+.settings .reset, .settings .done { height: 44px; padding: 0 16px; border-radius: 10px; font-size: 15px; }
+.settings .reset { color: var(--info); }
+.settings .done { background: var(--raised); color: var(--fg); }
+
+/* live: notice when the question on screen leaves the inbox while it holds unsent text */
+.gone { display: flex; flex-direction: column; gap: 10px; padding: 14px; border: 1px solid color-mix(in srgb, var(--warn) 60%, var(--line)); border-radius: 10px; background: var(--surface); font-size: 14px; line-height: 1.5; }
+.gone textarea { width: 100%; background: var(--surface-2); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 8px; font: inherit; resize: vertical; }
+.gone .next { align-self: flex-start; height: 44px; padding: 0 16px; border-radius: 8px; background: var(--raised); }
+.gone .why { color: var(--fg-2); }

@@ -1,0 +1,13 @@
+/* Fonts: the faces and the three families the page uses. Inter, Source Serif 4 and JetBrains Mono, all under the
+   SIL Open Font License 1.1 (fonts/OFL-*.txt). */
+@font-face { font-family: aqua-sans; src: url(fonts/inter-latin-wght-normal.woff2) format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; }
+@font-face { font-family: aqua-sans; src: url(fonts/inter-latin-wght-italic.woff2) format("woff2"); font-weight: 100 900; font-style: italic; font-display: swap; }
+@font-face { font-family: aqua-serif; src: url(fonts/source-serif-4-latin-wght-normal.woff2) format("woff2"); font-weight: 200 900; font-style: normal; font-display: swap; }
+@font-face { font-family: aqua-serif; src: url(fonts/source-serif-4-latin-wght-italic.woff2) format("woff2"); font-weight: 200 900; font-style: italic; font-display: swap; }
+@font-face { font-family: aqua-mono; src: url(fonts/jetbrains-mono-latin-wght-normal.woff2) format("woff2"); font-weight: 100 800; font-style: normal; font-display: swap; }
+
+:root {
+  --font-sans: aqua-sans, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: aqua-serif, Georgia, "Times New Roman", serif;
+  --font-mono: aqua-mono, ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
